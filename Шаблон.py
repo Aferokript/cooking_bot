@@ -2,6 +2,7 @@ import telebot
 import os
 from telebot.types import ReplyKeyboardMarkup
 import random
+from dotenv import load_dotenv
 
 
 cooking_menu = [
@@ -19,6 +20,8 @@ cooking_menu = [
     },
 ]
 
+load_dotenv()
+
 token = os.environ['TELEGRAM_TOKEN']
 bot = telebot.TeleBot(token)
 
@@ -26,10 +29,13 @@ managers_menu = ReplyKeyboardMarkup(resize_keyboard=True)
 managers_menu.row('Добавить блюдо', 'Удалить блюдо')
 
 users_main_menu = ReplyKeyboardMarkup(resize_keyboard=True)
-users_main_menu.row('Посмотреть рецепт', 'Добавить в избранное', 'Купить бесконечные просмотры')
+users_main_menu.row('Показать блюдо', 'Добавить в избранное', 'Купить бесконечные просмотры')
 
-managers_id = {7280963930} # мужики не путайтесь, это такое множество
+managers_id = {1341390157} # мужики не путайтесь, это такое множество
+
 user_free_dishes = {}
+
+users_favorite_dishes = {}
 
 
 def get_random_dish():
@@ -42,14 +48,20 @@ def get_formatted_dishes(dishes):
     for dish in dishes:
         photo = dish.get('photo')
         name = dish.get('name')
-        ingredients = dish.get('ingredients')
+        ingredients_list = []
+        for ingredient in dish.get('ingredients'):
+            ingredient_name = ingredient.get('name')
+            ingredient_price = ingredient.get('price')
+            ingredients_list.append(f"{ingredient_name} ({ingredient_price} руб.)")
+
+        ingredients_str = "\n".join(ingredients_list)
         price = dish.get('price')
         instructions = dish.get('instructions')
-        return (f'{photo}'
-                f' Название {name}'
-                f' Список ингредиентов: {ingredients},'
-                f' Общая стоимость: {price},'
-                f' Инструкция приготовления: {instructions}')
+    return (f'{photo}'
+            f' Название {name}'
+            f' Список ингредиентов: {ingredients_str}'
+            f' Общая стоимость: {price},'
+            f' Инструкция приготовления: {instructions}')
 
 
 @bot.message_handler(commands=['start'])
@@ -61,7 +73,7 @@ def start(message):
         bot.send_message(message.chat.id, 'Выбирайте уникальные меню на ваш выбор!', reply_markup=users_main_menu)
 
 
-@bot.message_handler(func=lambda message: message.text == 'Посмотреть рецепт')
+@bot.message_handler(func=lambda message: message.text == 'Показать блюдо')
 def show_dishes(message):
     user_id = message.chat.id
     random_dish = get_random_dish()
@@ -77,5 +89,4 @@ def show_dishes(message):
         bot.send_message(message.chat.id, 'Ваши бесплатные просмотры закончились! Купите подписку')
 
 
-bot.polling()
-bot.polling()
+bot.infinity_polling()
