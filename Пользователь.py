@@ -22,13 +22,9 @@ cooking_menu = [
 ]
 
 user_free_dishes = {}
-
 users_favorite_dishes = {}
-
 users_current_dishes = {}
-
 users_hate_dishes = {}
-
 temporary_dish_to_add = {}
 
 load_dotenv()
