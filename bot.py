@@ -15,8 +15,9 @@ users_hate_dishes = {}
 temporary_dish_to_add = {}
 
 load_dotenv()
-
 token = os.environ['TELEGRAM_TOKEN']
+managers_id = {int(os.environ['ADMIN_ID'])}
+
 bot = telebot.TeleBot(token)
 
 managers_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -28,9 +29,6 @@ users_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
 users_menu.row('🍽️ Показать блюдо', '⭐ Добавить в избранное')
 users_menu.row('📋 Посмотреть избранные блюда', '❌ Удалить из избранного')
 users_menu.row('💎 Купить бесконечные просмотры')
-
-managers_id = {int(os.environ['ADMIN_ID'])}
-
 
 def get_random_dish():
     if not cooking_menu:
