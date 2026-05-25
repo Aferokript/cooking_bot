@@ -112,19 +112,23 @@ def show_dishes_logic(message, user_id):
         user_free_dishes[user_id] -= 1
         users_current_dishes[user_id] = random_dish
     else:
-        bot.send_message(message.chat.id,'💸 Ваши бесплатные просмотры закончились!'
-                                         ' 😢\n\nКупите подписку, чтобы продолжить ✨')
+        bot.send_message(
+            message.chat.id,
+            '💸 Ваши бесплатные просмотры закончились! 😢\n\n'
+            'Купите подписку, чтобы продолжить ✨'
+        )
 
 
 def show_favorite_dishes(message):
     user_id = message.chat.id
-
     favorite_ids = users_favorite_dishes.get(user_id, set())
 
     if not favorite_ids:
-        bot.send_message(user_id,
-                         "📭 У вас пока нет избранных блюд 😢\n\n⭐"
-                         " Нажмите 'Добавить в избранное' при просмотре блюда")
+        bot.send_message(
+            user_id,
+            "📭 У вас пока нет избранных блюд 😢\n\n"
+            "⭐ Нажмите 'Добавить в избранное' при просмотре блюда"
+        )
         return
 
     favorite_dishes = [dish for dish in cooking_menu if dish["id"] in favorite_ids]
@@ -137,11 +141,19 @@ def show_favorite_dishes(message):
 def start(message):
     user_id = message.chat.id
     if user_id in managers_id:
-        bot.send_message(message.chat.id, '👋 С возвращением, администратор!', reply_markup=managers_menu,
-                         parse_mode='Markdown')
+        bot.send_message(
+            message.chat.id,
+            '👋 С возвращением, администратор!',
+            reply_markup=managers_menu,
+            parse_mode='Markdown'
+        )
     else:
-        bot.send_message(message.chat.id, '🍳 Добро пожаловать!\n\nВыбирайте уникальные блюда на ваш выбор 👨‍🍳',
-                         reply_markup=users_main_menu)
+        bot.send_message(
+            message.chat.id,
+            '🍳 Добро пожаловать!\n\n'
+            'Выбирайте уникальные блюда на ваш выбор 👨‍🍳',
+            reply_markup=users_main_menu
+        )
 
 
 @bot.message_handler(func=lambda message: message.text == '🍽️ Показать блюдо')
@@ -151,9 +163,15 @@ def show_dishes(message):
     try:
         show_dishes_logic(message, message.chat.id)
     except ApiTelegramException:
-        bot.send_message(user_id, '⚠️ Слишком много запросов, попробуйте позже ⚠️')
+        bot.send_message(
+            user_id,
+            '⚠️ Слишком много запросов, попробуйте позже ⚠️'
+        )
     except requests.exceptions.RequestException:
-        bot.send_message(user_id, '⚠️ Проблемы на стороне сервера, приносим свои извинения')
+        bot.send_message(
+            user_id,
+            '⚠️ Проблемы на стороне сервера, приносим свои извинения'
+        )
 
 
 @bot.message_handler(func=lambda message: message.text == '⭐ Добавить в избранное')
@@ -165,7 +183,10 @@ def add_favorite(message):
     except ApiTelegramException:
         bot.send_message(user_id, '⚠️ Слишком много запросов, попробуйте позже')
     except requests.exceptions.RequestException:
-        bot.send_message(user_id, '⚠️ Проблемы на стороне сервера, приносим свои извинения ⚠️')
+        bot.send_message(
+            user_id,
+            '⚠️ Проблемы на стороне сервера, приносим свои извинения'
+        )
 
 
 @bot.message_handler(func=lambda message: message.text == '📋 Посмотреть избранные блюда')
@@ -177,7 +198,10 @@ def show_favorite(message):
     except ApiTelegramException:
         bot.send_message(user_id, '⚠️ Слишком много запросов, попробуйте позже')
     except requests.exceptions.RequestException:
-        bot.send_message(user_id, '⚠️ Проблемы на стороне сервера, приносим свои извинения ⚠️')
+        bot.send_message(
+            user_id,
+            '⚠️ Проблемы на стороне сервера, приносим свои извинения'
+        )
 
 
 bot.infinity_polling(interval=3)
